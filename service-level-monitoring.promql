@@ -1,0 +1,178 @@
+# ==========================================
+# 1. COMPUTE ENGINE (OPS AGENT)
+# ==========================================
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        sum by (project_id, instance_id) (
+          agent_googleapis_com:cpu_utilization{monitored_resource="gce_instance", cpu_state!="idle"}
+        )
+      ),
+      "service", "Compute Engine", "project_id", ".*"
+    ),
+    "metric_type", "CPU", "project_id", ".*"
+  )
+or
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        sum by (project_id, instance_id) (
+          agent_googleapis_com:memory_percent_used{monitored_resource="gce_instance", state="used"}
+        )
+      ),
+      "service", "Compute Engine", "project_id", ".*"
+    ),
+    "metric_type", "Memory", "project_id", ".*"
+  )
+or
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        max by (project_id, instance_id) (
+          agent_googleapis_com:disk_percent_used{monitored_resource="gce_instance", state="used"}
+        )
+      ),
+      "service", "Compute Engine", "project_id", ".*"
+    ),
+    "metric_type", "Storage", "project_id", ".*"
+  )
+
+# ==========================================
+# 2. CLOUD SQL
+# ==========================================
+or
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        cloudsql_googleapis_com:database_cpu_utilization
+      ) * 100,
+      "service", "Cloud SQL", "project_id", ".*"
+    ),
+    "metric_type", "CPU", "project_id", ".*"
+  )
+or
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        cloudsql_googleapis_com:database_memory_utilization
+      ) * 100,
+      "service", "Cloud SQL", "project_id", ".*"
+    ),
+    "metric_type", "Memory", "project_id", ".*"
+  )
+or
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        cloudsql_googleapis_com:database_disk_utilization
+      ) * 100,
+      "service", "Cloud SQL", "project_id", ".*"
+    ),
+    "metric_type", "Storage", "project_id", ".*"
+  )
+
+# ==========================================
+# 3. CLOUD RUN
+# ==========================================
+or
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        run_googleapis_com:container_cpu_utilizations
+      ) * 100,
+      "service", "Cloud Run", "project_id", ".*"
+    ),
+    "metric_type", "CPU", "project_id", ".*"
+  )
+or
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        run_googleapis_com:container_memory_utilizations
+      ) * 100,
+      "service", "Cloud Run", "project_id", ".*"
+    ),
+    "metric_type", "Memory", "project_id", ".*"
+  )
+
+# ==========================================
+# 4. GKE (KUBERNETES NODES)
+# ==========================================
+or
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        kubernetes_io:node_cpu_allocatable_utilization
+      ) * 100,
+      "service", "GKE Nodes", "project_id", ".*"
+    ),
+    "metric_type", "CPU", "project_id", ".*"
+  )
+or
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        kubernetes_io:node_memory_allocatable_utilization
+      ) * 100,
+      "service", "GKE Nodes", "project_id", ".*"
+    ),
+    "metric_type", "Memory", "project_id", ".*"
+  )
+or
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        kubernetes_io:node_ephemeral_storage_allocatable_utilization
+      ) * 100,
+      "service", "GKE Nodes", "project_id", ".*"
+    ),
+    "metric_type", "Storage", "project_id", ".*"
+  )
+
+# ==========================================
+# 5. ALLOYDB FOR POSTGRESQL
+# ==========================================
+or
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        alloydb_googleapis_com:instance_cpu_utilization
+      ) * 100,
+      "service", "AlloyDB", "project_id", ".*"
+    ),
+    "metric_type", "CPU", "project_id", ".*"
+  )
+or
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        alloydb_googleapis_com:instance_memory_utilization
+      ) * 100,
+      "service", "AlloyDB", "project_id", ".*"
+    ),
+    "metric_type", "Memory", "project_id", ".*"
+  )
+
+# ==========================================
+# 6. MEMORYSTORE (REDIS)
+# ==========================================
+or
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        redis_googleapis_com:stats_cpu_utilization
+      ) * 100,
+      "service", "Memorystore (Redis)", "project_id", ".*"
+    ),
+    "metric_type", "CPU", "project_id", ".*"
+  )
+or
+  label_replace(
+    label_replace(
+      avg by (project_id) (
+        redis_googleapis_com:server_memory_usage_ratio
+      ) * 100,
+      "service", "Memorystore (Redis)", "project_id", ".*"
+    ),
+    "metric_type", "Memory", "project_id", ".*"
+  )
